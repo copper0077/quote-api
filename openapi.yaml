@@ -27,11 +27,11 @@ paths:
                 customer:
                   type: string
                   description: The name of the customer or government agency receiving the quote.
-                  example: Hidalgo County
+                  example: City of Laredo Police Department
                 dealership:
                   type: string
                   description: The name of the dealership issuing the quote.
-                  example: Sames Bastrop CDJ
+                  example: Sames Laredo Chevrolet
                 vehicles:
                   type: array
                   description: List of vehicles included in the quote.
@@ -44,10 +44,10 @@ paths:
                         example: "2025"
                       make:
                         type: string
-                        example: Dodge
+                        example: Chevrolet
                       model:
                         type: string
-                        example: Durango Pursuit
+                        example: Tahoe PPV
                       contract:
                         type: string
                         example: TIPS240901
@@ -56,21 +56,31 @@ paths:
                         example: 1
                       msrp:
                         type: number
-                        example: 48000
+                        example: 54900
                       discountPrice:
                         type: number
-                        example: 45000
+                        example: 54900
                       taxAndLicense:
                         type: number
-                        example: 1000
+                        example: 0
                       totalPrice:
                         type: number
-                        example: 46000
+                        example: 54900
                       standardOptions:
                         type: array
                         items:
                           type: string
-                        example: ["Leather Seats", "Bluetooth", "Backup Camera"]
+                        example:
+                          - 5.3L EcoTec3 V8 engine
+                          - 10-speed automatic transmission
+                          - Rear-Wheel Drive (RWD)
+                          - Police-rated suspension package
+                          - Brembo® heavy-duty front brakes
+                          - 20" Black-painted aluminum wheels
+                          - High-performance Firestone® Pursuit tires
+                          - Engine and transmission oil coolers
+                          - High-output alternator
+                          - Vinyl floor covering with cloth seating
                 upgrades:
                   type: array
                   description: Optional upgrades or upfitting costs.
@@ -79,16 +89,16 @@ paths:
                     properties:
                       name:
                         type: string
-                        example: Dana Safety Upfit
+                        example: Dana Safety Upfit (Quote #564500-A)
                       quantity:
                         type: integer
                         example: 1
                       price:
                         type: number
-                        example: 22000
+                        example: 26930.83
                       total:
                         type: number
-                        example: 22000
+                        example: 26930.83
                 tradeIn:
                   type: object
                   description: Optional trade-in information.
@@ -114,13 +124,13 @@ paths:
                   properties:
                     miles:
                       type: integer
-                      example: 250
+                      example: 150
                     ratePerMile:
                       type: number
                       example: 2.0
                     total:
                       type: number
-                      example: 500
+                      example: 300
       responses:
         '200':
           description: Successfully generated quote PDF.
@@ -132,7 +142,7 @@ paths:
                   downloadUrl:
                     type: string
                     description: Direct link to the generated quote PDF.
-                    example: https://docraptor.com/download/abc123-SAG-1001-AI.pdf
+                    example: https://docraptor.com/download/SAG-1001-AI.pdf
         '500':
           description: Internal server error
         '504':
