@@ -16,7 +16,7 @@ def generate_quote():
 
         # 1. Render the HTML with Jinja2
         env = Environment(loader=FileSystemLoader("templates"))
-        template = env.get_template("quote_template.html")
+        template = env.get_template("fleet_quote_template.html")
         html_content = template.render(data)
 
         # 2. Send to DocRaptor (set test to False for real PDF)
