@@ -4,69 +4,46 @@
   <meta charset="UTF-8">
   <title>Fleet Quote</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 10pt;
-      margin: 30px;
-      line-height: 1.4;
+    body { font-family: Arial, sans-serif; font-size: 10pt; margin: 30px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td {
+      border: 1px solid #ccc;  /* Reduced border thickness */
+      padding: 6px;
+      font-size: 9pt;
     }
-
+    th { background-color: #f9f9f9; }
     .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
     }
-
-    .logo-block img {
-      width: 180px;
-      max-height: 80px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .subtext {
-      font-size: 8pt;
-      color: #333;
-      margin-top: 4px;
-    }
-
-    .quote-title {
-      font-size: 24pt;
-      font-weight: bold;
-      text-align: right;
-    }
-
-    .section-header {
-      background-color: #f0f0f0;
-      padding: 8px;
+    .logo-block { text-align: left; }
+    .quote-title { text-align: right; font-size: 28pt; font-weight: bold; }
+    .subtext { font-size: 10pt; font-style: italic; margin-top: 4px; }
+    .section-title {
       font-weight: bold;
       margin-top: 20px;
       font-size: 11pt;
+      border-bottom: 1px solid #999;
+      padding-bottom: 4px;
     }
-
-    .vehicle-block, .options-block, .trade-block, .transport-block {
-      margin-top: 10px;
-    }
-
-    ul {
-      margin: 6px 0 12px 20px;
-    }
-
-    .summary {
-      text-align: right;
-      font-size: 10pt;
-      margin-top: 20px;
-    }
-
     .footer {
-      text-align: center;
+      margin-top: 30px;
       font-size: 9pt;
-      margin-top: 40px;
+      text-align: center;
     }
-
-    .footer a {
-      color: #333;
-      text-decoration: none;
+    @media print {
+      body {
+        margin: 10mm;
+        font-size: 9pt;
+      }
+      .quote-title {
+        font-size: 22pt;
+      }
+      th, td {
+        border: 0.5pt solid #aaa;
+      }
     }
   </style>
 </head>
@@ -74,52 +51,115 @@
 
   <div class="header-row">
     <div class="logo-block">
-      <img src="https://quote-assets.onrender.com/logo.png" alt="Company Logo">
+      <img src="https://quote-assets.onrender.com/logo.png" alt="Sames Fleet Logo" style="max-height: 80px;"><br>
       <div class="subtext">The Ultimate Fleet Management Solution Provider</div>
     </div>
     <div class="quote-title">QUOTE</div>
   </div>
 
-  <div class="section-header">Vehicle Details</div>
-  <div class="vehicle-block">
-    <strong>2025 Dodge Durango</strong><br>
-    Contract: TIPS240901 • Qty: 1<br>
-    MSRP: $48,000 • Discounted Price: $45,000<br>
-    Tax & License Fees: $1,000<br>
-    <strong>Total: $46,000</strong>
-    <ul>
-      <li>Standard Option 1</li>
-      <li>Standard Option 2</li>
-      <li>Standard Option 3</li>
-    </ul>
+  <p><strong>QUOTE#:</strong> SAG-1234-AI &nbsp;&nbsp; <strong>DATE:</strong> 2025-05-27 &nbsp;&nbsp; <strong>EXPIRES:</strong> 2025-06-27</p>
+
+  <!-- Dealer/Customer Info -->
+  <table>
+    <tr>
+      <th>QUOTE FROM:</th>
+      <th>QUOTE FOR:</th>
+    </tr>
+    <tr>
+      <td>
+        Sames Bastrop CDJ<br>
+        1115 HWY 71 W, Bastrop, TX<br>
+        David Lowry<br>
+        956-482-7507
+      </td>
+      <td>
+        Test Customer<br>
+        123 Test Street, Bastrop, TX<br>
+        John Doe<br>
+        123-456-7890
+      </td>
+    </tr>
+  </table>
+
+  <!-- Vehicle -->
+  <div class="section-title">VEHICLE INFORMATION</div>
+  <table>
+    <thead>
+      <tr>
+        <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT #</th><th>COLOR</th><th>QTY</th>
+        <th>MSRP</th><th>DISCOUNTED</th><th>FEES</th><th>TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025</td><td>Dodge Durango Pursuit</td><td>TIPS240901</td><td>Black</td><td>1</td>
+        <td>$48,500.00</td><td>$44,000.00</td><td>$1,000.00</td><td>$45,000.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Standard Options -->
+  <div class="section-title">STANDARD OPTIONS</div>
+  <table>
+    <tbody>
+      <tr><td>Leather Seats</td><td>Sunroof</td></tr>
+      <tr><td>Premium Audio</td><td>Bluetooth</td></tr>
+      <tr><td>Backup Camera</td><td>Navigation System</td></tr>
+      <tr><td>Alloy Wheels</td><td>Remote Start</td></tr>
+      <tr><td>Dual Climate Control</td><td>Blind Spot Monitor</td></tr>
+      <tr><td>Lane Assist</td><td>Heated Seats</td></tr>
+      <tr><td>Fog Lights</td><td>Power Liftgate</td></tr>
+      <tr><td>Keyless Entry</td><td>Adaptive Cruise</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Optional Upgrades -->
+  <div class="section-title">OPTIONS / UPGRADES</div>
+  <table>
+    <thead><tr><th>Description</th><th>Qty</th><th>Price</th></tr></thead>
+    <tbody>
+      <tr><td>Upgraded Tires</td><td>1</td><td>$500.00</td></tr>
+      <tr><td>All-Weather Mats</td><td>1</td><td>$100.00</td></tr>
+      <tr><td>Spotlight</td><td>2</td><td>$250.00</td></tr>
+      <tr><td>Rear Cage Divider</td><td>1</td><td>$600.00</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Upfitter -->
+  <div class="section-title">UPFITTER INFORMATION</div>
+  <table>
+    <thead><tr><th>Company</th><th>Description</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr><td>Example Upfitter</td><td>Custom modifications for fleet vehicles</td><td>$2,500.00</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Trade -->
+  <div class="section-title">TRADE-IN INFORMATION</div>
+  <table>
+    <thead><tr><th>VIN</th><th>Trade-In Allowance</th></tr></thead>
+    <tbody><tr><td>1C4RDJAG7FC345678</td><td>$10,000.00</td></tr></tbody>
+  </table>
+
+  <!-- Totals -->
+  <div style="text-align: right; margin-top: 30px;">
+    <p><strong>TRANSPORT:</strong> 250 miles × $2.00 = $500.00</p>
+    <p><strong>GRAND TOTAL:</strong> <span style="font-size: 18pt;">$48,600.00</span></p>
   </div>
 
-  <div class="section-header">Options / Upgrades</div>
-  <div class="options-block">
-    <ul>
-      <li>Rear Camera • Qty: 1 • $300 • Total: $300</li>
-      <li>Window Tinting • Qty: 1 • $200 • Total: $200</li>
-    </ul>
+  <!-- Terms -->
+  <div style="text-align: center; margin-top: 40px;">
+    <div class="section-title">TERMS AND CONDITIONS</div>
+    <p>
+      BALANCE ON THE VEHICLE IS DUE 30 DAYS AFTER DELIVERY TO THE UPFITTER OR CUSTOMER.<br>
+      $500 MONTHLY FLOOR PLAN INTEREST WILL BE ADDED TO ANY UNPAID BALANCE BEYOND THE NET 30 TERMS.
+    </p>
   </div>
 
-  <div class="section-header">Trade-In</div>
-  <div class="trade-block">
-    <p>2018 Ford Explorer • VIN: 1FMSK8DH2JGA12345<br>
-    Trade Allowance: $2,000</p>
-  </div>
-
-  <div class="summary">
-    <p><strong>TRANSPORT</strong><br>
-    Distance: 250 miles × $2.00 = $500.00</p>
-    <p><strong>GRAND TOTAL: $48,600.00</strong></p>
-  </div>
-
+  <!-- Footer -->
   <div class="footer">
-    <p><strong>TERMS AND CONDITIONS:</strong><br>
-    BALANCE ON THE VEHICLE IS DUE 30 DAYS AFTER DELIVERY TO THE UPFITTER OR CUSTOMER.<br>
-    $500 MONTHLY FLOOR PLAN INTEREST WILL BE ADDED TO ANY UNPAID BALANCE BEYOND THE NET 30 TERMS.<br>
-    <a href="https://samesfleet.com/government-fleet">samesfleet.com/government-fleet</a> |
-    <a href="https://www.facebook.com/samesgovfleet">Facebook</a></p>
+    Visit us: <a href="https://www.samesfleet.com/government-fleet">www.samesfleet.com/government-fleet</a> |
+    <a href="https://www.facebook.com/samesgovfleet">Facebook</a>
   </div>
 
 </body>
