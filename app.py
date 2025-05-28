@@ -57,13 +57,11 @@ def generate_quote():
             "https://docraptor.com/docs",
             auth=(docraptor_api_key, ""),
             json={
-                "doc": {
-                    "test": False,
-                    "document_type": "pdf",
-                    "name": filename,
-                    "document_content": html_content,
-                    "async": True
-                }
+                "test": False,
+                "document_type": "pdf",
+                "name": filename,
+                "document_content": html_content,
+                "async": True
             },
             headers={"Content-Type": "application/json"}
         )
