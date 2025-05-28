@@ -75,3 +75,32 @@ paths:
                     vin:
                       type: string
                     allowance:
+                      type: number
+                transport:
+                  type: object
+                  properties:
+                    miles:
+                      type: integer
+                    ratePerMile:
+                      type: number
+                    total:
+                      type: number
+      responses:
+        '200':
+          description: PDF generation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
