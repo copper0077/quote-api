@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 @app.route("/api/generate-quote", methods=["POST"])
 def generate_quote():
+    print("DocRaptor API Key from env:", docraptor_api_key)
     data = request.json
 
     html = render_template("fleet_quote_template.html", **data)
@@ -13,8 +14,6 @@ def generate_quote():
     docraptor_api_key = os.environ.get("EeI9dejUc2V-gqqHpxpi")
     if not docraptor_api_key:
         return jsonify({"error": "Missing DocRaptor API key"}), 500
-@app.route("/api/generate-quote", methods=["POST"])
-def generate_quote():
     data = request.json
 
     html = render_template("fleet_quote_template.html", **data)
