@@ -3,10 +3,11 @@ import os
 import requests
 from jinja2 import Environment, FileSystemLoader
 import re
+import time
 
 app = Flask(__name__)
 
-# Util: Generate the next quote number
+# Generate the next quote number
 def get_next_quote_number():
     counter_file = "quote_counter.txt"
     prefix = "SAG-"
@@ -24,7 +25,7 @@ def get_next_quote_number():
 
     return f"{prefix}{next_id}{suffix}"
 
-# Util: Sanitize customer name for filename
+# Sanitize customer name for filename
 def sanitize_filename(name):
     return re.sub(r'[^a-zA-Z0-9_-]', '_', name)
 
@@ -37,46 +38,60 @@ def generate_quote():
 
         data = request.get_json() or {}
 
-        # Generate or override quote number
+        # Generate quote number
         quote_number = get_next_quote_number()
         data["quoteNumber"] = quote_number
 
-        # Sanitize filename from customer + quote number
         customer_name = data.get("customer", "Unnamed_Customer")
         safe_name = sanitize_filename(customer_name)
         filename = f"{safe_name}_{quote_number}.pdf"
 
-        # Render HTML from Jinja template
+        # Render HTML
         env = Environment(loader=FileSystemLoader("templates"))
         template = env.get_template("fleet_quote_template.html")
         html_content = template.render(data)
 
-        # Call DocRaptor with async mode
-        response = requests.post(
+        # Step 1: Submit async job to DocRaptor
+        create_resp = requests.post(
             "https://docraptor.com/docs",
             auth=(docraptor_api_key, ""),
             json={
                 "doc": {
-                    "document_content": html_content,
-                    "name": filename,
-                    "document_type": "pdf",
                     "test": False,
+                    "document_type": "pdf",
+                    "name": filename,
+                    "document_content": html_content,
                     "async": True
                 }
             },
             headers={"Content-Type": "application/json"}
         )
 
-        if response.status_code == 200:
-            resp_json = response.json()
-            download_url = resp_json.get("download_url")
+        if create_resp.status_code != 200:
+            return jsonify({"error": "DocRaptor job submission failed", "details": create_resp.text}), 500
+
+        job_data = create_resp.json()
+        doc_id = job_data.get("id")
+
+        if not doc_id:
+            return jsonify({"error": "DocRaptor did not return a document ID"}), 500
+
+        # Step 2: Poll for download_url (wait and retry up to 5x)
+        for _ in range(5):
+            time.sleep(2)  # Wait 2 seconds between attempts
+            poll_resp = requests.get(
+                f"https://docraptor.com/docs/{doc_id}",
+                auth=(docraptor_api_key, "")
+            )
+            if poll_resp.status_code != 200:
+                continue
+
+            poll_data = poll_resp.json()
+            download_url = poll_data.get("download_url")
             if download_url:
                 return jsonify({"downloadUrl": download_url})
-            else:
-                return jsonify({"error": "DocRaptor returned no download URL"}), 500
-        else:
-            print("❌ DocRaptor error:", response.text)
-            return jsonify({"error": "DocRaptor PDF generation failed", "details": response.text}), 500
+
+        return jsonify({"error": "DocRaptor timed out before returning a download URL"}), 504
 
     except Exception as e:
         import traceback
