@@ -4,21 +4,30 @@ import requests
 
 app = Flask(__name__)
 
+import traceback
+
 @app.route("/api/generate-quote", methods=["POST"])
 def generate_quote():
-    import os
-    print("ENV VARS:", dict(os.environ))  # 🔍 See what env vars are set
+    try:
+        import os
+        print("ENV VARS:", dict(os.environ))
 
-    docraptor_api_key = os.environ.get("DOCRAPTOR_API_KEY")
-    print("DocRaptor API Key from env:", docraptor_api_key)
+        docraptor_api_key = os.environ.get("DOCRAPTOR_API_KEY")
+        print("DocRaptor API Key from env:", docraptor_api_key)
 
-    ...
+        data = request.get_json() or {}
 
-    # Extract data from the incoming JSON request
-    data = request.get_json() or {}
+        if not docraptor_api_key:
+            return jsonify({"error": "Missing DocRaptor API key"}), 500
 
-    if not docraptor_api_key:
-        return jsonify({"error": "Missing DocRaptor API key"}), 500
+        # Your DocRaptor request goes here...
+        # (no changes needed here for now)
+
+    except Exception as e:
+        print("🔥 ERROR:", e)
+        traceback.print_exc()
+        return jsonify({"error": "Internal Server Error"}), 500
+
 
     html = render_template("fleet_quote_template.html", **data)
 
