@@ -14,13 +14,48 @@
     .subtext { font-size: 10pt; font-style: italic; margin-top: 4px; }
     .section-title { font-weight: bold; margin-top: 20px; font-size: 11pt; }
     .footer { margin-top: 30px; font-size: 9pt; text-align: center; }
+    <head>
+  <meta charset="UTF-8">
+  <title>Fleet Quote</title>
+  <style>
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .logo-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .logo-block img {
+      width: 180px;
+      max-height: 80px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .subtext {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .quote-title {
+      font-size: 40px;
+      font-weight: bold;
+      color: #333;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
-
   <div class="header-row">
     <div class="logo-block">
-      <img src="{{ logo_data_url }}" alt="Sames Fleet Logo" style="max-height: 80px;"><br>
+      <img src="https://raw.githubusercontent.com/copper0077/quote-api/main/static/logo.png" alt="Company Logo">
       <div class="subtext">The Ultimate Fleet Management Solution Provider</div>
     </div>
     <div class="quote-title">QUOTE</div>
