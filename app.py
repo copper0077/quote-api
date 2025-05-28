@@ -52,16 +52,15 @@ def generate_quote():
         template = env.get_template("fleet_quote_template.html")
         html_content = template.render(data)
 
-        # Step 1: Submit DocRaptor job (async)
+        # Step 1: Submit DocRaptor async job
         create_resp = requests.post(
-            "https://docraptor.com/docs",
+            "https://docraptor.com/async_docs",
             auth=(docraptor_api_key, ""),
             json={
                 "test": False,
                 "document_type": "pdf",
                 "name": filename,
-                "document_content": html_content,
-                "async": True
+                "document_content": html_content
             },
             headers={"Content-Type": "application/json"}
         )
@@ -69,19 +68,18 @@ def generate_quote():
         if create_resp.status_code != 200:
             return jsonify({"error": "DocRaptor job submission failed", "details": create_resp.text}), 500
 
-        # Step 2: Log DocRaptor response
         job_data = create_resp.json()
         print("📦 DocRaptor response:", job_data)
 
-        doc_id = job_data.get("id")
-        if not doc_id:
-            return jsonify({"error": "DocRaptor did not return a document ID", "docraptor_response": job_data}), 500
+        status_id = job_data.get("status_id")
+        if not status_id:
+            return jsonify({"error": "DocRaptor did not return a status_id", "docraptor_response": job_data}), 500
 
-        # Step 3: Poll DocRaptor for the download URL
+        # Step 2: Poll for download_url
         for _ in range(5):
-            time.sleep(2)  # Wait 2 seconds between checks
+            time.sleep(2)  # Wait 2 seconds between attempts
             poll_resp = requests.get(
-                f"https://docraptor.com/docs/{doc_id}",
+                f"https://docraptor.com/status/{status_id}",
                 auth=(docraptor_api_key, "")
             )
             if poll_resp.status_code != 200:
@@ -89,14 +87,13 @@ def generate_quote():
 
             poll_data = poll_resp.json()
             print("🔁 Polling result:", poll_data)
-            download_url = poll_data.get("download_url")
-            if download_url:
+            if download_url := poll_data.get("download_url"):
                 return jsonify({"downloadUrl": download_url})
 
         return jsonify({"error": "DocRaptor timed out before returning a download URL"}), 504
 
     except Exception as e:
         import traceback
-        print("🔥 ERROR:", str(e))
+        print("🔥 ERROR:", e)
         traceback.print_exc()
         return jsonify({"error": "Internal Server Error"}), 500
