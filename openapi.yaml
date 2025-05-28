@@ -1,0 +1,97 @@
+openapi: 3.1.0
+info:
+  title: Quote Builder API
+  description: Generate government fleet quotes as downloadable PDFs using vehicle and pricing data.
+  version: 1.0.0
+servers:
+  - url: https://quote-api-qflm.onrender.com
+paths:
+  /api/generate-quote:
+    post:
+      operationId: generateQuote
+      summary: Generate a quote PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quoteNumber:
+                  type: string
+                customer:
+                  type: string
+                dealership:
+                  type: string
+                vehicles:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      year:
+                        type: string
+                      make:
+                        type: string
+                      model:
+                        type: string
+                      contract:
+                        type: string
+                      quantity:
+                        type: integer
+                      msrp:
+                        type: number
+                      discountPrice:
+                        type: number
+                      taxAndLicense:
+                        type: number
+                      totalPrice:
+                        type: number
+                      standardOptions:
+                        type: array
+                        items:
+                          type: string
+                upgrades:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      quantity:
+                        type: integer
+                      price:
+                        type: number
+                      total:
+                        type: number
+                tradeIn:
+                  type: object
+                  properties:
+                    year:
+                      type: string
+                    make:
+                      type: string
+                    model:
+                      type: string
+                    vin:
+                      type: string
+                    allowance:
+                      type: number
+                transport:
+                  type: object
+                  properties:
+                    miles:
+                      type: integer
+                    ratePerMile:
+                      type: number
+                    total:
+                      type: number
+      responses:
+        '200':
+          description: Successfully generated PDF
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '500':
+          description: Internal server error
