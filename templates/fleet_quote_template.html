@@ -4,45 +4,81 @@
   <meta charset="UTF-8">
   <title>Fleet Quote</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 10pt; margin: 30px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      margin: 15mm;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
     th, td {
-      border: 1px solid #ccc;  /* Reduced border thickness */
+      border: none;
       padding: 6px;
       font-size: 9pt;
     }
-    th { background-color: #f9f9f9; }
+
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #fafafa;
+    }
+
     .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
+
     .logo-block { text-align: left; }
     .quote-title { text-align: right; font-size: 28pt; font-weight: bold; }
     .subtext { font-size: 10pt; font-style: italic; margin-top: 4px; }
+
     .section-title {
+      background-color: #e0e0e0;
       font-weight: bold;
-      margin-top: 20px;
+      margin-top: 25px;
       font-size: 11pt;
-      border-bottom: 1px solid #999;
-      padding-bottom: 4px;
+      padding: 8px;
+      border-radius: 4px;
     }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #ccc;
+      margin: 25px 0;
+    }
+
     .footer {
       margin-top: 30px;
       font-size: 9pt;
       text-align: center;
     }
+
     @media print {
       body {
         margin: 10mm;
         font-size: 9pt;
       }
+
       .quote-title {
-        font-size: 22pt;
+        font-size: 20pt;
       }
+
+      .section-title {
+        font-size: 10pt;
+      }
+
       th, td {
-        border: 0.5pt solid #aaa;
+        padding: 4px;
       }
     }
   </style>
@@ -59,7 +95,7 @@
 
   <p><strong>QUOTE#:</strong> SAG-1234-AI &nbsp;&nbsp; <strong>DATE:</strong> 2025-05-27 &nbsp;&nbsp; <strong>EXPIRES:</strong> 2025-06-27</p>
 
-  <!-- Dealer/Customer Info -->
+  <div class="section-title">QUOTE INFORMATION</div>
   <table>
     <tr>
       <th>QUOTE FROM:</th>
@@ -81,24 +117,40 @@
     </tr>
   </table>
 
-  <!-- Vehicle -->
+  <hr>
+
   <div class="section-title">VEHICLE INFORMATION</div>
   <table>
     <thead>
       <tr>
-        <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT #</th><th>COLOR</th><th>QTY</th>
-        <th>MSRP</th><th>DISCOUNTED</th><th>FEES</th><th>TOTAL</th>
+        <th>YEAR</th>
+        <th>MAKE & MODEL</th>
+        <th>CONTRACT #</th>
+        <th>COLOR</th>
+        <th>QTY</th>
+        <th>MSRP</th>
+        <th>CONTRACT DISCOUNT PRICE</th>
+        <th>FEES</th>
+        <th>TOTAL</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>2025</td><td>Dodge Durango Pursuit</td><td>TIPS240901</td><td>Black</td><td>1</td>
-        <td>$48,500.00</td><td>$44,000.00</td><td>$1,000.00</td><td>$45,000.00</td>
+        <td>2025</td>
+        <td>Dodge Durango Pursuit</td>
+        <td>TIPS240901</td>
+        <td>Black</td>
+        <td>1</td>
+        <td>$48,500.00</td>
+        <td>$44,000.00</td>
+        <td>$1,000.00</td>
+        <td>$45,000.00</td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Standard Options -->
+  <hr>
+
   <div class="section-title">STANDARD OPTIONS</div>
   <table>
     <tbody>
@@ -113,10 +165,13 @@
     </tbody>
   </table>
 
-  <!-- Optional Upgrades -->
+  <hr>
+
   <div class="section-title">OPTIONS / UPGRADES</div>
   <table>
-    <thead><tr><th>Description</th><th>Qty</th><th>Price</th></tr></thead>
+    <thead>
+      <tr><th>Description</th><th>Qty</th><th>Price</th></tr>
+    </thead>
     <tbody>
       <tr><td>Upgraded Tires</td><td>1</td><td>$500.00</td></tr>
       <tr><td>All-Weather Mats</td><td>1</td><td>$100.00</td></tr>
@@ -125,38 +180,54 @@
     </tbody>
   </table>
 
-  <!-- Upfitter -->
+  <hr>
+
   <div class="section-title">UPFITTER INFORMATION</div>
   <table>
-    <thead><tr><th>Company</th><th>Description</th><th>Total</th></tr></thead>
+    <thead>
+      <tr><th>Company</th><th>Description</th><th>Total</th></tr>
+    </thead>
     <tbody>
-      <tr><td>Example Upfitter</td><td>Custom modifications for fleet vehicles</td><td>$2,500.00</td></tr>
+      <tr>
+        <td>Example Upfitter</td>
+        <td>Custom modifications for fleet vehicles</td>
+        <td>$2,500.00</td>
+      </tr>
     </tbody>
   </table>
 
-  <!-- Trade -->
+  <hr>
+
   <div class="section-title">TRADE-IN INFORMATION</div>
   <table>
-    <thead><tr><th>VIN</th><th>Trade-In Allowance</th></tr></thead>
-    <tbody><tr><td>1C4RDJAG7FC345678</td><td>$10,000.00</td></tr></tbody>
+    <thead>
+      <tr><th>VIN</th><th>Trade-In Allowance</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1C4RDJAG7FC345678</td>
+        <td>$10,000.00</td>
+      </tr>
+    </tbody>
   </table>
 
-  <!-- Totals -->
+  <hr>
+
   <div style="text-align: right; margin-top: 30px;">
     <p><strong>TRANSPORT:</strong> 250 miles × $2.00 = $500.00</p>
     <p><strong>GRAND TOTAL:</strong> <span style="font-size: 18pt;">$48,600.00</span></p>
   </div>
 
-  <!-- Terms -->
-  <div style="text-align: center; margin-top: 40px;">
-    <div class="section-title">TERMS AND CONDITIONS</div>
+  <hr>
+
+  <div class="section-title">TERMS AND CONDITIONS</div>
+  <div style="text-align: center;">
     <p>
       BALANCE ON THE VEHICLE IS DUE 30 DAYS AFTER DELIVERY TO THE UPFITTER OR CUSTOMER.<br>
       $500 MONTHLY FLOOR PLAN INTEREST WILL BE ADDED TO ANY UNPAID BALANCE BEYOND THE NET 30 TERMS.
     </p>
   </div>
 
-  <!-- Footer -->
   <div class="footer">
     Visit us: <a href="https://www.samesfleet.com/government-fleet">www.samesfleet.com/government-fleet</a> |
     <a href="https://www.facebook.com/samesgovfleet">Facebook</a>
