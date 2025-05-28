@@ -42,16 +42,17 @@ def generate_quote():
         quote_number = get_next_quote_number()
         data["quoteNumber"] = quote_number
 
+        # Create sanitized filename
         customer_name = data.get("customer", "Unnamed_Customer")
         safe_name = sanitize_filename(customer_name)
         filename = f"{safe_name}_{quote_number}.pdf"
 
-        # Render HTML
+        # Render HTML from template
         env = Environment(loader=FileSystemLoader("templates"))
         template = env.get_template("fleet_quote_template.html")
         html_content = template.render(data)
 
-        # Step 1: Submit async job to DocRaptor
+        # Step 1: Submit DocRaptor job (async)
         create_resp = requests.post(
             "https://docraptor.com/docs",
             auth=(docraptor_api_key, ""),
@@ -70,15 +71,17 @@ def generate_quote():
         if create_resp.status_code != 200:
             return jsonify({"error": "DocRaptor job submission failed", "details": create_resp.text}), 500
 
+        # Step 2: Log DocRaptor response
         job_data = create_resp.json()
+        print("📦 DocRaptor response:", job_data)
+
         doc_id = job_data.get("id")
-
         if not doc_id:
-            return jsonify({"error": "DocRaptor did not return a document ID"}), 500
+            return jsonify({"error": "DocRaptor did not return a document ID", "docraptor_response": job_data}), 500
 
-        # Step 2: Poll for download_url (wait and retry up to 5x)
+        # Step 3: Poll DocRaptor for the download URL
         for _ in range(5):
-            time.sleep(2)  # Wait 2 seconds between attempts
+            time.sleep(2)  # Wait 2 seconds between checks
             poll_resp = requests.get(
                 f"https://docraptor.com/docs/{doc_id}",
                 auth=(docraptor_api_key, "")
@@ -87,6 +90,7 @@ def generate_quote():
                 continue
 
             poll_data = poll_resp.json()
+            print("🔁 Polling result:", poll_data)
             download_url = poll_data.get("download_url")
             if download_url:
                 return jsonify({"downloadUrl": download_url})
