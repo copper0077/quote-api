@@ -62,25 +62,6 @@
       font-size: 9pt;
       text-align: center;
     }
-
-    @media print {
-      body {
-        margin: 10mm;
-        font-size: 9pt;
-      }
-
-      .quote-title {
-        font-size: 20pt;
-      }
-
-      .section-title {
-        font-size: 10pt;
-      }
-
-      th, td {
-        padding: 4px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -93,7 +74,9 @@
     <div class="quote-title">QUOTE</div>
   </div>
 
-  <p><strong>QUOTE#:</strong> SAG-1234-AI &nbsp;&nbsp; <strong>DATE:</strong> 2025-05-27 &nbsp;&nbsp; <strong>EXPIRES:</strong> 2025-06-27</p>
+  <p><strong>QUOTE#:</strong> {{ quoteNumber }} &nbsp;&nbsp; 
+     <strong>DATE:</strong> {{ quoteDate }} &nbsp;&nbsp; 
+     <strong>EXPIRES:</strong> {{ quoteExpires }}</p>
 
   <div class="section-title">QUOTE INFORMATION</div>
   <table>
@@ -103,123 +86,99 @@
     </tr>
     <tr>
       <td>
-        Sames Bastrop CDJ<br>
-        1115 HWY 71 W, Bastrop, TX<br>
-        David Lowry<br>
-        956-482-7507
+        {{ dealership or 'Sames Fleet' }}<br>
+        {{ managerName or 'Fleet Sales Manager' }}<br>
+        {{ managerPhone or '000-000-0000' }}<br>
+        {{ managerEmail or '' }}
       </td>
       <td>
-        Test Customer<br>
-        123 Test Street, Bastrop, TX<br>
-        John Doe<br>
-        123-456-7890
+        {{ customer or 'Customer Name' }}<br>
       </td>
     </tr>
   </table>
 
+  {% for vehicle in vehicles %}
+    <hr>
+    <div class="section-title">VEHICLE INFORMATION</div>
+    <table>
+      <thead>
+        <tr>
+          <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT #</th><th>QTY</th>
+          <th>MSRP</th><th>DISCOUNT PRICE</th><th>FEES</th><th>TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ vehicle.year }}</td>
+          <td>{{ vehicle.make }} {{ vehicle.model }}</td>
+          <td>{{ vehicle.contract }}</td>
+          <td>{{ vehicle.quantity }}</td>
+          <td>${{ "%.2f"|format(vehicle.msrp) }}</td>
+          <td>${{ "%.2f"|format(vehicle.discountPrice) }}</td>
+          <td>${{ "%.2f"|format(vehicle.taxAndLicense) }}</td>
+          <td>${{ "%.2f"|format(vehicle.totalPrice) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    {% if vehicle.standardOptions %}
+    <div class="section-title">STANDARD OPTIONS</div>
+    <table>
+      <tbody>
+        {% for opt in vehicle.standardOptions|batch(2, '&nbsp;') %}
+          <tr>
+            <td>{{ opt[0] }}</td>
+            <td>{{ opt[1] if opt|length > 1 else '' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  {% endfor %}
+
+  {% if upgrades %}
   <hr>
-
-  <div class="section-title">VEHICLE INFORMATION</div>
-  <table>
-    <thead>
-      <tr>
-        <th>YEAR</th>
-        <th>MAKE & MODEL</th>
-        <th>CONTRACT #</th>
-        <th>COLOR</th>
-        <th>QTY</th>
-        <th>MSRP</th>
-        <th>CONTRACT DISCOUNT PRICE</th>
-        <th>FEES</th>
-        <th>TOTAL</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2025</td>
-        <td>Dodge Durango Pursuit</td>
-        <td>TIPS240901</td>
-        <td>Black</td>
-        <td>1</td>
-        <td>$48,500.00</td>
-        <td>$44,000.00</td>
-        <td>$1,000.00</td>
-        <td>$45,000.00</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <hr>
-
-  <div class="section-title">STANDARD OPTIONS</div>
-  <table>
-    <tbody>
-      <tr><td>Leather Seats</td><td>Sunroof</td></tr>
-      <tr><td>Premium Audio</td><td>Bluetooth</td></tr>
-      <tr><td>Backup Camera</td><td>Navigation System</td></tr>
-      <tr><td>Alloy Wheels</td><td>Remote Start</td></tr>
-      <tr><td>Dual Climate Control</td><td>Blind Spot Monitor</td></tr>
-      <tr><td>Lane Assist</td><td>Heated Seats</td></tr>
-      <tr><td>Fog Lights</td><td>Power Liftgate</td></tr>
-      <tr><td>Keyless Entry</td><td>Adaptive Cruise</td></tr>
-    </tbody>
-  </table>
-
-  <hr>
-
   <div class="section-title">OPTIONS / UPGRADES</div>
   <table>
-    <thead>
-      <tr><th>Description</th><th>Qty</th><th>Price</th></tr>
-    </thead>
+    <thead><tr><th>Description</th><th>Qty</th><th>Total</th></tr></thead>
     <tbody>
-      <tr><td>Upgraded Tires</td><td>1</td><td>$500.00</td></tr>
-      <tr><td>All-Weather Mats</td><td>1</td><td>$100.00</td></tr>
-      <tr><td>Spotlight</td><td>2</td><td>$250.00</td></tr>
-      <tr><td>Rear Cage Divider</td><td>1</td><td>$600.00</td></tr>
-    </tbody>
-  </table>
-
-  <hr>
-
-  <div class="section-title">UPFITTER INFORMATION</div>
-  <table>
-    <thead>
-      <tr><th>Company</th><th>Description</th><th>Total</th></tr>
-    </thead>
-    <tbody>
+      {% for upgrade in upgrades %}
       <tr>
-        <td>Example Upfitter</td>
-        <td>Custom modifications for fleet vehicles</td>
-        <td>$2,500.00</td>
+        <td>{{ upgrade.name }}</td>
+        <td>{{ upgrade.quantity }}</td>
+        <td>${{ "%.2f"|format(upgrade.total) }}</td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
+  {% endif %}
 
+  {% if tradeIn %}
   <hr>
-
   <div class="section-title">TRADE-IN INFORMATION</div>
   <table>
-    <thead>
-      <tr><th>VIN</th><th>Trade-In Allowance</th></tr>
-    </thead>
+    <thead><tr><th>VIN</th><th>Allowance</th></tr></thead>
     <tbody>
       <tr>
-        <td>1C4RDJAG7FC345678</td>
-        <td>$10,000.00</td>
+        <td>{{ tradeIn.vin }}</td>
+        <td>${{ "%.2f"|format(tradeIn.allowance) }}</td>
       </tr>
     </tbody>
   </table>
+  {% endif %}
+
+  {% if transport %}
+  <hr>
+  <div class="section-title">TRANSPORT</div>
+  <p><strong>Distance:</strong> {{ transport.miles }} miles × ${{ "%.2f"|format(transport.ratePerMile) }} = ${{ "%.2f"|format(transport.total) }}</p>
+  {% endif %}
 
   <hr>
-
   <div style="text-align: right; margin-top: 30px;">
-    <p><strong>TRANSPORT:</strong> 250 miles × $2.00 = $500.00</p>
-    <p><strong>GRAND TOTAL:</strong> <span style="font-size: 18pt;">$48,600.00</span></p>
+    <p><strong>GRAND TOTAL:</strong> <span style="font-size: 18pt;">${{ grandTotal }}</span></p>
   </div>
 
   <hr>
-
   <div class="section-title">TERMS AND CONDITIONS</div>
   <div style="text-align: center;">
     <p>
