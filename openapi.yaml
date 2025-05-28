@@ -2,9 +2,11 @@ openapi: 3.1.0
 info:
   title: Quote Builder API
   description: Generate government fleet quotes as downloadable PDFs using vehicle and pricing data.
-  version: 1.0.0
+  version: 1.1.0
+
 servers:
   - url: https://quote-api-qflm.onrender.com
+
 paths:
   /api/generate-quote:
     post:
@@ -17,8 +19,6 @@ paths:
             schema:
               type: object
               properties:
-                quoteNumber:
-                  type: string
                 customer:
                   type: string
                 dealership:
@@ -75,23 +75,3 @@ paths:
                     vin:
                       type: string
                     allowance:
-                      type: number
-                transport:
-                  type: object
-                  properties:
-                    miles:
-                      type: integer
-                    ratePerMile:
-                      type: number
-                    total:
-                      type: number
-      responses:
-        '200':
-          description: Successfully generated PDF
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '500':
-          description: Internal server error
