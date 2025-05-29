@@ -59,6 +59,7 @@ paths:
           description: Update completed
 
 components:
+  schemas: {}
   securitySchemes:
     OAuth2:
       type: oauth2
