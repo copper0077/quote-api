@@ -70,8 +70,8 @@ def generate_quote():
 
         # 6. Poll for completion
         poll_url = f"https://docraptor.com/status/{status_id}"
-        max_wait = 20  # seconds
-        poll_interval = 2
+        max_wait = 60  # seconds
+        poll_interval = 3
         elapsed = 0
         while elapsed < max_wait:
             status_resp = requests.get(poll_url, auth=(docraptor_api_key, ""))
