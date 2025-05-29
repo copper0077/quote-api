@@ -1,6 +1,7 @@
 from flask import Flask, send_file, jsonify, request
 import os
 import requests
+import time
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime, timedelta
 
@@ -15,13 +16,13 @@ def generate_quote():
 
         data = request.get_json() or {}
 
-        # Auto-fill quote date and expiration
+        # 1. Set quote date/expiration
         if not data.get("quoteDate"):
             data["quoteDate"] = datetime.now().strftime("%Y-%m-%d")
         if not data.get("quoteExpires"):
             data["quoteExpires"] = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
 
-        # Auto-generate quote number if missing
+        # 2. Generate quote number if missing
         if not data.get("quoteNumber"):
             counter_path = "quote_counter.txt"
             current = 1000
@@ -32,10 +33,8 @@ def generate_quote():
             with open(counter_path, "w") as f:
                 f.write(str(current + 1))
 
-        # Calculate grand total
-        grand_total = 0
-        for v in data.get("vehicles", []):
-            grand_total += v.get("totalPrice", 0)
+        # 3. Calculate grand total
+        grand_total = sum(v.get("totalPrice", 0) for v in data.get("vehicles", []))
         for u in data.get("upgrades", []):
             grand_total += u.get("total", 0)
         if data.get("transport"):
@@ -44,12 +43,12 @@ def generate_quote():
             grand_total += data["upfitter"].get("total", 0)
         data["grandTotal"] = grand_total
 
-        # Render HTML with Jinja2
+        # 4. Render HTML with Jinja2
         env = Environment(loader=FileSystemLoader("templates"))
         template = env.get_template("fleet_quote_template.html")
         html_content = template.render(data)
 
-        # Send to DocRaptor
+        # 5. Submit async PDF job to DocRaptor
         filename = f"{data['customer'].replace(' ', '_')}_{data['quoteNumber']}.pdf"
         create_resp = requests.post(
             "https://docraptor.com/async_docs",
@@ -67,15 +66,27 @@ def generate_quote():
         job_data = create_resp.json()
         status_id = job_data.get("status_id")
         if not status_id:
-            return jsonify({
-                "error": "DocRaptor did not return a document ID",
-                "docraptor_response": job_data
-            }), 500
+            return jsonify({"error": "DocRaptor did not return a valid status_id", "response": job_data}), 500
 
-        return jsonify({
-            "downloadUrl": f"https://docraptor.com/status/{status_id}",
-            "filename": filename
-        })
+        # 6. Poll for completion
+        poll_url = f"https://docraptor.com/status/{status_id}"
+        max_wait = 20  # seconds
+        poll_interval = 2
+        elapsed = 0
+        while elapsed < max_wait:
+            status_resp = requests.get(poll_url, auth=(docraptor_api_key, ""))
+            status_json = status_resp.json()
+            if status_json.get("done"):
+                download_url = status_json.get("download_url")
+                return jsonify({
+                    "quoteNumber": data["quoteNumber"],
+                    "downloadUrl": download_url,
+                    "filename": filename
+                })
+            time.sleep(poll_interval)
+            elapsed += poll_interval
+
+        return jsonify({"error": "PDF generation timed out"}), 504
 
     except Exception as e:
         import traceback
