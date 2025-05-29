@@ -7,7 +7,7 @@
     body {
       font-family: Arial, sans-serif;
       font-size: 10pt;
-      margin: 15mm;
+      margin: 10mm 12mm 10mm 12mm;
     }
 
     table {
@@ -86,99 +86,98 @@
     </tr>
     <tr>
       <td>
-        {{ dealership or 'Sames Fleet' }}<br>
-        {{ managerName or 'Fleet Sales Manager' }}<br>
-        {{ managerPhone or '000-000-0000' }}<br>
-        {{ managerEmail or '' }}
+        {{ dealership }}<br>
+        {{ managerName }}<br>
+        {{ managerPhone }}<br>
+        {{ managerEmail }}
       </td>
       <td>
-        {{ customer or 'Customer Name' }}<br>
+        {{ customer }}
       </td>
     </tr>
   </table>
 
-  {% for vehicle in vehicles %}
-    <hr>
-    <div class="section-title">VEHICLE INFORMATION</div>
-    <table>
-      <thead>
-        <tr>
-          <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT #</th><th>QTY</th>
-          <th>MSRP</th><th>DISCOUNT PRICE</th><th>FEES</th><th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ vehicle.year }}</td>
-          <td>{{ vehicle.make }} {{ vehicle.model }}</td>
-          <td>{{ vehicle.contract }}</td>
-          <td>{{ vehicle.quantity }}</td>
-          <td>${{ "%.2f"|format(vehicle.msrp) }}</td>
-          <td>${{ "%.2f"|format(vehicle.discountPrice) }}</td>
-          <td>${{ "%.2f"|format(vehicle.taxAndLicense) }}</td>
-          <td>${{ "%.2f"|format(vehicle.totalPrice) }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <hr>
 
-    {% if vehicle.standardOptions %}
-    <div class="section-title">STANDARD OPTIONS</div>
-    <table>
-      <tbody>
-        {% for opt in vehicle.standardOptions|batch(2, '&nbsp;') %}
-          <tr>
-            <td>{{ opt[0] }}</td>
-            <td>{{ opt[1] if opt|length > 1 else '' }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
+  {% for vehicle in vehicles %}
+  <div class="section-title">VEHICLE INFORMATION</div>
+  <table>
+    <thead>
+      <tr>
+        <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT</th><th>COLOR</th>
+        <th>QTY</th><th>MSRP</th><th>CONTRACT DISCOUNT PRICE</th>
+        <th>FEES</th><th>TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ vehicle.year }}</td>
+        <td>{{ vehicle.make }} {{ vehicle.model }}</td>
+        <td>{{ vehicle.contract }}</td>
+        <td>{{ vehicle.color or '' }}</td>
+        <td>{{ vehicle.quantity }}</td>
+        <td>${{ '%.2f'|format(vehicle.msrp) }}</td>
+        <td>${{ '%.2f'|format(vehicle.discountPrice) }}</td>
+        <td>${{ '%.2f'|format(vehicle.taxAndLicense) }}</td>
+        <td>${{ '%.2f'|format(vehicle.totalPrice) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">STANDARD OPTIONS</div>
+  <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 20px;">
+    {% for opt in vehicle.standardOptions %}
+      <li>{{ opt }}</li>
+    {% endfor %}
+  </ul>
   {% endfor %}
 
   {% if upgrades %}
-  <hr>
   <div class="section-title">OPTIONS / UPGRADES</div>
   <table>
-    <thead><tr><th>Description</th><th>Qty</th><th>Total</th></tr></thead>
+    <thead><tr><th>Description</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
     <tbody>
-      {% for upgrade in upgrades %}
+      {% for u in upgrades %}
       <tr>
-        <td>{{ upgrade.name }}</td>
-        <td>{{ upgrade.quantity }}</td>
-        <td>${{ "%.2f"|format(upgrade.total) }}</td>
+        <td>{{ u.name }}</td>
+        <td>{{ u.quantity }}</td>
+        <td>${{ '%.2f'|format(u.price) }}</td>
+        <td>${{ '%.2f'|format(u.total) }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
   {% endif %}
 
-  {% if tradeIn %}
-  <hr>
-  <div class="section-title">TRADE-IN INFORMATION</div>
+  {% if upfitter %}
+  <div class="section-title">UPFITTER INFORMATION</div>
   <table>
-    <thead><tr><th>VIN</th><th>Allowance</th></tr></thead>
+    <thead>
+      <tr><th>Company</th><th>Quote #</th><th>Description</th><th>Total</th></tr>
+    </thead>
     <tbody>
       <tr>
-        <td>{{ tradeIn.vin }}</td>
-        <td>${{ "%.2f"|format(tradeIn.allowance) }}</td>
+        <td>{{ upfitter.company }}</td>
+        <td>{{ upfitter.quoteNumber }}</td>
+        <td>{{ upfitter.description }}</td>
+        <td>${{ '%.2f'|format(upfitter.total) }}</td>
       </tr>
     </tbody>
   </table>
   {% endif %}
 
   {% if transport %}
-  <hr>
   <div class="section-title">TRANSPORT</div>
-  <p><strong>Distance:</strong> {{ transport.miles }} miles × ${{ "%.2f"|format(transport.ratePerMile) }} = ${{ "%.2f"|format(transport.total) }}</p>
+  <p><strong>Distance:</strong> {{ transport.miles }} miles × ${{ '%.2f'|format(transport.ratePerMile) }} = ${{ '%.2f'|format(transport.total) }}</p>
   {% endif %}
 
-  <hr>
-  <div style="text-align: right; margin-top: 30px;">
-    <p><strong>GRAND TOTAL:</strong> <span style="font-size: 18pt;">${{ grandTotal }}</span></p>
-  </div>
+  <div class="section-title">TOTAL</div>
+  <p style="text-align: right; font-size: 14pt;">
+    <strong>GRAND TOTAL:</strong> ${{ '%.2f'|format(grandTotal) }}
+  </p>
 
   <hr>
+
   <div class="section-title">TERMS AND CONDITIONS</div>
   <div style="text-align: center;">
     <p>

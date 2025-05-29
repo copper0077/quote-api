@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Quote Builder API
   description: Generate government fleet quotes as downloadable PDFs using vehicle and pricing data.
-  version: 1.0.3
+  version: 1.0.1
 servers:
   - url: https://quote-api-qflm.onrender.com
 paths:
@@ -21,10 +21,8 @@ paths:
                   type: string
                 quoteDate:
                   type: string
-                  format: date
                 quoteExpires:
                   type: string
-                  format: date
                 customer:
                   type: string
                 dealership:
@@ -58,6 +56,8 @@ paths:
                         type: number
                       totalPrice:
                         type: number
+                      color:
+                        type: string
                       standardOptions:
                         type: array
                         items:
@@ -75,18 +75,16 @@ paths:
                         type: number
                       total:
                         type: number
-                tradeIn:
+                upfitter:
                   type: object
                   properties:
-                    year:
+                    company:
                       type: string
-                    make:
+                    quoteNumber:
                       type: string
-                    model:
+                    description:
                       type: string
-                    vin:
-                      type: string
-                    allowance:
+                    total:
                       type: number
                 transport:
                   type: object
@@ -97,9 +95,16 @@ paths:
                       type: number
                     total:
                       type: number
+                tradeIn:
+                  type: object
+                  properties:
+                    vin:
+                      type: string
+                    allowance:
+                      type: number
       responses:
         '200':
-          description: Successfully generated quote PDF
+          description: PDF successfully generated
           content:
             application/json:
               schema:
@@ -107,7 +112,7 @@ paths:
                 properties:
                   downloadUrl:
                     type: string
-                  quoteNumber:
+                  filename:
                     type: string
         '500':
-          description: Internal error from quote generator
+          description: Internal server error
