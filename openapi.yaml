@@ -2,14 +2,14 @@ openapi: 3.1.0
 info:
   title: Quote Builder API
   description: Generate government fleet quotes as downloadable PDFs using vehicle and pricing data.
-  version: 1.0.1
+  version: 1.1.0
 servers:
   - url: https://quote-api-qflm.onrender.com
 paths:
   /api/generate-quote:
     post:
       operationId: generateQuote
-      summary: Generate a quote PDF
+      summary: Submit quote generation request and receive DocRaptor job ID
       requestBody:
         required: true
         content:
@@ -21,8 +21,10 @@ paths:
                   type: string
                 quoteDate:
                   type: string
+                  format: date
                 quoteExpires:
                   type: string
+                  format: date
                 customer:
                   type: string
                 dealership:
@@ -104,15 +106,46 @@ paths:
                       type: number
       responses:
         '200':
-          description: PDF successfully generated
+          description: Job submitted successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  downloadUrl:
+                  quoteNumber:
+                    type: string
+                  statusId:
                     type: string
                   filename:
                     type: string
         '500':
           description: Internal server error
+
+  /api/quote-status/{statusId}:
+    get:
+      operationId: getQuoteStatus
+      summary: Check the status of a quote PDF generation
+      parameters:
+        - name: statusId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: DocRaptor job status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  done:
+                    type: boolean
+                  download_url:
+                    type: string
+                    nullable: true
+                  error:
+                    type: string
+                    nullable: true
+        '500':
+          description: Failed to retrieve job status
