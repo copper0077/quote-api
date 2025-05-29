@@ -8,36 +8,30 @@
     @page {
       margin: 10mm;
     }
-
     body {
       font-family: 'Roboto', Arial, sans-serif;
       font-size: 10pt;
       margin: 0;
       color: #222;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
     }
-
     th, td {
       border: none;
       padding: 6px;
       font-size: 9pt;
     }
-
     th {
       background-color: #f4f6f9;
       font-weight: bold;
       color: #2c3e50;
     }
-
     tr:nth-child(even) td {
       background-color: #fafafa;
     }
-
     .section-title {
       background-color: #dde4ec;
       font-weight: bold;
@@ -47,14 +41,12 @@
       border-radius: 4px;
       color: #1f2f45;
     }
-
     .footer {
       margin-top: 30px;
       font-size: 8pt;
       color: #888;
       text-align: center;
     }
-
     hr {
       border: none;
       border-top: 1px solid #ddd;
@@ -106,9 +98,91 @@
     </tr>
   </table>
 
+  {% if vehicles %}
+    {% for vehicle in vehicles %}
+      <div class="section-title">VEHICLE INFORMATION</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th><th>Make & Model</th><th>Contract</th><th>Color</th>
+            <th>Qty</th><th>MSRP</th><th>Discount Price</th><th>Fees</th><th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ vehicle.year }}</td>
+            <td>{{ vehicle.make }} {{ vehicle.model }}</td>
+            <td>{{ vehicle.contract }}</td>
+            <td>{{ vehicle.color or '' }}</td>
+            <td>{{ vehicle.quantity }}</td>
+            <td>${{ '%.2f'|format(vehicle.msrp) }}</td>
+            <td>${{ '%.2f'|format(vehicle.discountPrice) }}</td>
+            <td>${{ '%.2f'|format(vehicle.taxAndLicense) }}</td>
+            <td>${{ '%.2f'|format(vehicle.totalPrice) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      {% if vehicle.standardOptions %}
+      <p><strong>Standard Options:</strong></p>
+      <ul>
+        {% for opt in vehicle.standardOptions %}
+          <li>{{ opt }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% if upgrades %}
+    <div class="section-title">OPTIONS / UPGRADES</div>
+    <table>
+      <thead><tr><th>Description</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for u in upgrades %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.quantity }}</td>
+          <td>${{ '%.2f'|format(u.price) }}</td>
+          <td>${{ '%.2f'|format(u.total) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  {% if upfitter %}
+    <div class="section-title">UPFITTER INFORMATION</div>
+    <table>
+      <thead>
+        <tr><th>Company</th><th>Quote #</th><th>Description</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ upfitter.company }}</td>
+          <td>{{ upfitter.quoteNumber }}</td>
+          <td>{{ upfitter.description }}</td>
+          <td>${{ '%.2f'|format(upfitter.total) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  {% endif %}
+
+  {% if transport %}
+    <div class="section-title">TRANSPORT</div>
+    <p><strong>Distance:</strong> {{ transport.miles }} miles × ${{ '%.2f'|format(transport.ratePerMile) }} = ${{ '%.2f'|format(transport.total) }}</p>
+  {% endif %}
+
+  <div class="section-title">TOTAL</div>
+  <p style="text-align: right; font-size: 12pt;">
+    <strong>GRAND TOTAL:</strong> ${{ '%.2f'|format(grandTotal) }}
+  </p>
+
   <hr>
 
-  <!-- Remaining content unchanged, including sections for vehicles, upgrades, upfitter, etc. -->
-  <!-- You already have all that configured well from the last versions. -->
+  <div class="footer">
+    Visit us: <a href="https://www.samesfleet.com/government-fleet">www.samesfleet.com/government-fleet</a> |
+    <a href="https://www.facebook.com/samesgovfleet">Facebook</a>
+  </div>
+
 </body>
 </html>
