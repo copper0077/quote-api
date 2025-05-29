@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  title: Google Sheets Data Access
+  version: 1.0.0
+  description: Access data from Google Sheets using OAuth2 authentication.
+
+servers:
+  - url: https://sheets.googleapis.com/v4
+
+paths:
+  /spreadsheets/{spreadsheetId}/values/{range}:
+    get:
+      operationId: getGoogleSheetData
+      summary: Retrieve data from a Google Sheet
+      parameters:
+        - name: spreadsheetId
+          in: path
+          required: true
+          description: The ID of the Google Spreadsheet.
+          schema:
+            type: string
+        - name: range
+          in: path
+          required: true
+          description: The A1 notation of the range to retrieve values from.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  range:
+                    type: string
+                  majorDimension:
+                    type: string
+                  values:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: string
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            https://www.googleapis.com/auth/spreadsheets: Full access to Google Sheets
+
+security:
+  - OAuth2: [https://www.googleapis.com/auth/spreadsheets]
