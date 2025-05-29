@@ -3,10 +3,8 @@ info:
   title: Google Sheets Data Access
   version: 1.0.0
   description: Access data from Google Sheets using OAuth2 authentication.
-
 servers:
   - url: https://sheets.googleapis.com/v4
-
 paths:
   /spreadsheets/{spreadsheetId}/values/{range}:
     get:
@@ -26,7 +24,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successfully retrieved data
           content:
             application/json:
@@ -43,8 +41,8 @@ paths:
                       type: array
                       items:
                         type: string
-
 components:
+  schemas: {}
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -54,6 +52,6 @@ components:
           tokenUrl: https://oauth2.googleapis.com/token
           scopes:
             https://www.googleapis.com/auth/spreadsheets: Full access to Google Sheets
-
 security:
-  - OAuth2: [https://www.googleapis.com/auth/spreadsheets]
+  - OAuth2:
+      - https://www.googleapis.com/auth/spreadsheets
