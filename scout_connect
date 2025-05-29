@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: Google Sheets API for Scout
+  version: 1.0.0
+  description: Access and update records across multiple Google Sheets via API
+
+servers:
+  - url: https://sheets.googleapis.com/v4/spreadsheets
+
+paths:
+  /{spreadsheetId}/values/{range}:
+    get:
+      operationId: getSheetValues
+      summary: Read data from a specific sheet and range
+      parameters:
+        - name: spreadsheetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: range
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+
+    put:
+      operationId: updateSheetValues
+      summary: Update data in a specific range of a Google Sheet
+      parameters:
+        - name: spreadsheetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: range
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                values:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: string
+      responses:
+        '200':
+          description: Update completed
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            https://www.googleapis.com/auth/spreadsheets: Read and write access to Google Sheets
+
+security:
+  - OAuth2: []
