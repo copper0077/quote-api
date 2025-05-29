@@ -144,8 +144,11 @@ paths:
                   download_url:
                     type: string
                     nullable: true
-                  error:
+                  status:
                     type: string
+                    nullable: true
+                  number_of_pages:
+                    type: integer
                     nullable: true
         '500':
           description: Failed to retrieve job status
