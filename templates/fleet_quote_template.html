@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Fleet Quote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', Arial, sans-serif;
       font-size: 10pt;
-      margin: 10mm 12mm 10mm 12mm;
+      margin: 20mm;
+      color: #222;
     }
 
     table {
@@ -23,55 +25,52 @@
     }
 
     th {
-      background-color: #f0f0f0;
+      background-color: #f4f6f9;
       font-weight: bold;
+      color: #2c3e50;
     }
 
     tr:nth-child(even) td {
       background-color: #fafafa;
     }
 
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .logo-block { text-align: left; }
-    .quote-title { text-align: right; font-size: 28pt; font-weight: bold; }
-    .subtext { font-size: 10pt; font-style: italic; margin-top: 4px; }
-
     .section-title {
-      background-color: #e0e0e0;
+      background-color: #dde4ec;
       font-weight: bold;
       margin-top: 25px;
       font-size: 11pt;
       padding: 8px;
       border-radius: 4px;
-    }
-
-    hr {
-      border: 0;
-      border-top: 1px solid #ccc;
-      margin: 25px 0;
+      color: #1f2f45;
     }
 
     .footer {
       margin-top: 30px;
-      font-size: 9pt;
+      font-size: 8pt;
+      color: #888;
       text-align: center;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 30px 0;
     }
   </style>
 </head>
 <body>
 
-  <div class="header-row">
-    <div class="logo-block">
-      <img src="https://quote-assets.onrender.com/logo.png" alt="Sames Fleet Logo" style="max-height: 80px;"><br>
-      <div class="subtext">The Ultimate Fleet Management Solution Provider</div>
+  <!-- Header with logo and title -->
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <img src="https://quote-assets.onrender.com/logo.png" alt="Sames Fleet Logo" style="max-height: 80px;">
+      <div style="font-size: 9pt; font-style: italic; color: #555;">
+        The Ultimate Fleet Management Solution Provider
+      </div>
     </div>
-    <div class="quote-title">QUOTE</div>
+    <div>
+      <h1 style="margin: 0; color: #1f2f45;">Fleet Quote Summary</h1>
+    </div>
   </div>
 
   <p><strong>QUOTE#:</strong> {{ quoteNumber }} &nbsp;&nbsp; 
@@ -79,7 +78,11 @@
      <strong>EXPIRES:</strong> {{ quoteExpires }}</p>
 
   <div class="section-title">QUOTE INFORMATION</div>
-  <table>
+  <table style="table-layout: fixed;">
+    <colgroup>
+      <col style="width: 50%;">
+      <col style="width: 50%;">
+    </colgroup>
     <tr>
       <th>QUOTE FROM:</th>
       <th>QUOTE FOR:</th>
@@ -105,8 +108,7 @@
     <thead>
       <tr>
         <th>YEAR</th><th>MAKE & MODEL</th><th>CONTRACT</th><th>COLOR</th>
-        <th>QTY</th><th>MSRP</th><th>CONTRACT DISCOUNT PRICE</th>
-        <th>FEES</th><th>TOTAL</th>
+        <th>QTY</th><th>MSRP</th><th>DISCOUNT</th><th>FEES</th><th>TOTAL</th>
       </tr>
     </thead>
     <tbody>
@@ -124,12 +126,16 @@
     </tbody>
   </table>
 
-  <div class="section-title">STANDARD OPTIONS</div>
-  <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 20px;">
-    {% for opt in vehicle.standardOptions %}
-      <li>{{ opt }}</li>
-    {% endfor %}
-  </ul>
+  {% if vehicle.standardOptions %}
+  <div style="margin-left: 15px;">
+    <strong>Standard Options:</strong>
+    <ul>
+      {% for opt in vehicle.standardOptions %}
+        <li>{{ opt }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
   {% endfor %}
 
   {% if upgrades %}
@@ -149,7 +155,7 @@
   </table>
   {% endif %}
 
-  {% if upfitter %}
+  {% if upfitter and upfitter.total %}
   <div class="section-title">UPFITTER INFORMATION</div>
   <table>
     <thead>
@@ -171,9 +177,17 @@
   <p><strong>Distance:</strong> {{ transport.miles }} miles × ${{ '%.2f'|format(transport.ratePerMile) }} = ${{ '%.2f'|format(transport.total) }}</p>
   {% endif %}
 
-  <div class="section-title">TOTAL</div>
+  <div class="section-title">QUOTE SUMMARY</div>
+  <table>
+    <tr><td>Vehicles Total</td><td>${{ '%.2f'|format(totals.vehicles) }}</td></tr>
+    <tr><td>Upgrades Total</td><td>${{ '%.2f'|format(totals.upgrades) }}</td></tr>
+    <tr><td>Upfitter Total</td><td>${{ '%.2f'|format(totals.upfitter) }}</td></tr>
+    <tr><td>Transport Total</td><td>${{ '%.2f'|format(totals.transport) }}</td></tr>
+  </table>
+
+  <div class="section-title">GRAND TOTAL</div>
   <p style="text-align: right; font-size: 14pt;">
-    <strong>GRAND TOTAL:</strong> ${{ '%.2f'|format(grandTotal) }}
+    <strong>${{ '%.2f'|format(grandTotal) }}</strong>
   </p>
 
   <hr>
