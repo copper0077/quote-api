@@ -89,14 +89,18 @@
         {{ managerPhone }}<br>
         {{ managerEmail }}
       </td>
-      <td style="vertical-align: top;">
-        <strong>{{ customer }}</strong><br>
-        {% if customerContactName %}{{ customerContactName }}<br>{% endif %}
-        {% if customerPhone %}{{ customerPhone }}<br>{% endif %}
-        {% if customerEmail %}{{ customerEmail }}<br>{% endif %}
-      </td>
-    </tr>
-  </table>
+        <td style="vertical-align: top;">
+          {% set customer_lines = customer.split('\n') %}
+          <strong>{{ customer_lines[0] }}</strong><br>
+          {% for line in customer_lines[1:] %}
+            {{ line }}<br>
+          {% endfor %}
+          {% if customerContactName %}{{ customerContactName }}<br>{% endif %}
+          {% if customerPhone %}{{ customerPhone }}<br>{% endif %}
+          {% if customerEmail %}{{ customerEmail }}<br>{% endif %}
+        </td>
+      </tr>
+    </table>
 
   {% if vehicles %}
     {% for vehicle in vehicles %}
