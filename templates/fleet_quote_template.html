@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Fleet Quote</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
   <style>
     @page {
       margin: 10mm;
@@ -128,7 +129,7 @@
       </table>
       {% if vehicle.standardOptions %}
       <p><strong>Standard Options:</strong></p>
-      <ul>
+      <ul class="standard-options-list">
         {% for opt in vehicle.standardOptions %}
           <li>{{ opt }}</li>
         {% endfor %}
