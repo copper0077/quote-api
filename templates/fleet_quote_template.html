@@ -4,8 +4,17 @@
   <meta charset="UTF-8">
   <title>Fleet Quote</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css">
   <style>
+    .standard-options-list {
+      columns: 2;
+      -webkit-columns: 2;
+      -moz-columns: 2;
+      column-gap: 20px;
+      -webkit-column-gap: 20px;
+      -moz-column-gap: 20px;
+      list-style-type: disc;
+      padding-left: 20px;
+    }
     @page {
       margin: 10mm;
     }
@@ -53,16 +62,6 @@
       border-top: 1px solid #ddd;
       margin: 30px 0;
     }
-    .standard-options-list {
-      columns: 2;
-      -webkit-columns: 2;
-      -moz-columns: 2;
-      column-gap: 1em;
-      -webkit-column-gap: 1em;
-      -moz-column-gap: 1em;
-      list-style-type: disc;
-      padding-left: 20px;
-    }
   </style>
 </head>
 <body>
@@ -101,7 +100,7 @@
         {{ managerEmail }}
       </td>
         <td style="vertical-align: top;">
-          {% set customer_lines = customer.split('\n') %}
+          {% set customer_lines = customer.replace('\r\n', '\n').replace('\r', '\n').split('\n') %}
           <strong>{{ customer_lines[0] }}</strong><br>
           {% for line in customer_lines[1:] %}
             {{ line }}<br>
