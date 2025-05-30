@@ -1,0 +1,10 @@
+.standard-options-list {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+  column-gap: 20px;
+  -webkit-column-gap: 20px;
+  -moz-column-gap: 20px;
+  list-style-type: disc;
+  padding-left: 20px;
+}
