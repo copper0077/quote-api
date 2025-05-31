@@ -16,6 +16,17 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - customer
+                - customerContactName
+                - customerPhone
+                - customerEmail
+                - dealership
+                - managerName
+                - managerPhone
+                - managerEmail
+                - vehicles
+                - transport
               properties:
                 quoteNumber:
                   type: string
@@ -27,8 +38,19 @@ paths:
                   format: date
                 customer:
                   type: string
+                customerContactName:
+                  type: string
+                customerPhone:
+                  type: string
+                customerEmail:
+                  type: string
                 dealership:
                   type: string
+                  enum:
+                    - Sames Laredo Chevrolet
+                    - Sames Bastrop Ford
+                    - Sames Bastrop CDJ
+                    - Sames McAllen Ford
                 managerName:
                   type: string
                 managerPhone:
@@ -39,6 +61,18 @@ paths:
                   type: array
                   items:
                     type: object
+                    required:
+                      - year
+                      - make
+                      - model
+                      - contract
+                      - quantity
+                      - msrp
+                      - discountPrice
+                      - taxAndLicense
+                      - totalPrice
+                      - color
+                      - standardOptions
                     properties:
                       year:
                         type: string
@@ -68,6 +102,11 @@ paths:
                   type: array
                   items:
                     type: object
+                    required:
+                      - name
+                      - quantity
+                      - price
+                      - total
                     properties:
                       name:
                         type: string
@@ -79,6 +118,11 @@ paths:
                         type: number
                 upfitter:
                   type: object
+                  required:
+                    - company
+                    - quoteNumber
+                    - description
+                    - total
                   properties:
                     company:
                       type: string
@@ -90,6 +134,10 @@ paths:
                       type: number
                 transport:
                   type: object
+                  required:
+                    - miles
+                    - ratePerMile
+                    - total
                   properties:
                     miles:
                       type: integer
