@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import os
 import requests
 import time
@@ -6,6 +6,39 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import datetime, timedelta
 import json
 import pprint
+
+
+def log_quote_to_google_sheets(data):
+    """Append basic quote info to a Google Sheet if env vars are configured."""
+    spreadsheet_id = os.environ.get("SPREADSHEET_ID")
+    access_token = os.environ.get("GOOGLE_SHEETS_TOKEN")
+    range_name = os.environ.get("SHEETS_RANGE", "Sheet1!A1")
+    if not spreadsheet_id or not access_token:
+        # Skip logging if configuration is missing
+        print("Google Sheets logging skipped: missing credentials")
+        return
+
+    url = (
+        f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/"
+        f"{range_name}:append?valueInputOption=USER_ENTERED"
+    )
+    body = {
+        "values": [
+            [
+                data.get("quoteNumber"),
+                data.get("customer"),
+                data.get("grandTotal"),
+                data.get("quoteDate"),
+            ]
+        ]
+    }
+    headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+    try:
+        resp = requests.post(url, headers=headers, json=body)
+        if resp.status_code != 200:
+            print("Google Sheets logging failed:", resp.text)
+    except Exception as e:
+        print("Error logging to Google Sheets:", e)
 
 app = Flask(__name__)
 
@@ -52,6 +85,9 @@ def generate_quote():
         if data.get("upfitter"):
             grand_total += data["upfitter"].get("total", 0)
         data["grandTotal"] = grand_total
+
+        # Log to Google Sheets if configured
+        log_quote_to_google_sheets(data)
 
         # Render HTML
         env = Environment(loader=FileSystemLoader("templates"))
@@ -113,3 +149,9 @@ def quote_status(status_id):
         import traceback
         traceback.print_exc()
         return jsonify({"error": "Failed to check status", "details": str(e)}), 500
+
+
+@app.route("/")
+def index():
+    """Serve a basic interface for generating quotes."""
+    return render_template("index.html")
