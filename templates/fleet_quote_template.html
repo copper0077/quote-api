@@ -93,6 +93,7 @@
       <th>QUOTE FOR:</th>
     </tr>
       <tr>
+      <tr>
         <td style="vertical-align: top;">
           {% set from_lines = dealership.replace('\r\n', '\n').replace('\r', '\n').split('\n') %}
           <strong>{{ from_lines[0] }}</strong><br>
@@ -104,12 +105,12 @@
           {% if managerPhone %}<strong>Phone:</strong> {{ managerPhone }}<br>{% endif %}
         </td>
         <td style="vertical-align: top;">
-          {% set customer_lines = customer.replace('\r\n', '\n').replace('\r', '\n').split('\n') %}
-          <strong>{{ customer_lines[0] }}</strong><br>
-          {% for line in customer_lines[1:] %}
+          {% set from_lines = dealership.replace('\r\n', '\n').replace('\r', '\n').split('\n') %}
+          <strong>{{ from_lines[0] }}</strong><br>
+          {% for line in from_lines[1:] %}
             {{ line }}<br>
           {% endfor %}
-          {% if customerContactName %}<strong>Attn:</strong> {{ customerContactName }}<br>{% endif %}
+{% if customerContactName %}<strong>Attn:</strong> {{ customerContactName }}<br>{% endif %}
           {% if customerEmail %}<strong>Email:</strong> {{ customerEmail }}<br>{% endif %}
           {% if customerPhone %}<strong>Phone:</strong> {{ customerPhone }}<br>{% endif %}
         </td>
