@@ -16,6 +16,17 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - customer
+                - dealership
+                - managerName
+                - managerPhone
+                - managerEmail
+                - customerContactName
+                - customerPhone
+                - customerEmail
+                - vehicles
+                - transport
               properties:
                 quoteNumber:
                   type: string
@@ -29,16 +40,39 @@ paths:
                   type: string
                 dealership:
                   type: string
+                  enum:
+                    - Sames Laredo Chevrolet
+                    - Sames Bastrop Ford
+                    - Sames Bastrop CDJ
+                    - Sames McAllen Ford
                 managerName:
                   type: string
                 managerPhone:
                   type: string
                 managerEmail:
                   type: string
+                customerContactName:
+                  type: string
+                customerPhone:
+                  type: string
+                customerEmail:
+                  type: string
                 vehicles:
                   type: array
                   items:
                     type: object
+                    required:
+                      - year
+                      - make
+                      - model
+                      - contract
+                      - quantity
+                      - msrp
+                      - discountPrice
+                      - taxAndLicense
+                      - totalPrice
+                      - color
+                      - standardOptions
                     properties:
                       year:
                         type: string
@@ -79,6 +113,11 @@ paths:
                         type: number
                 upfitter:
                   type: object
+                  required:
+                    - company
+                    - quoteNumber
+                    - description
+                    - total
                   properties:
                     company:
                       type: string

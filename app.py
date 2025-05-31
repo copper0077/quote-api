@@ -59,6 +59,48 @@ def generate_quote():
         pprint.pprint(data)
         print("========== END DEBUG ==========\n")
 
+        # Basic validation of required top-level fields
+        required_fields = [
+            "customer",
+            "dealership",
+            "managerName",
+            "managerPhone",
+            "managerEmail",
+            "customerContactName",
+            "customerPhone",
+            "customerEmail",
+            "vehicles",
+            "transport",
+        ]
+        missing = [f for f in required_fields if not data.get(f)]
+        if missing:
+            return jsonify({"error": "Missing required field(s)", "fields": missing}), 400
+
+        # Validate each vehicle
+        vehicle_fields = [
+            "year",
+            "make",
+            "model",
+            "contract",
+            "quantity",
+            "msrp",
+            "discountPrice",
+            "taxAndLicense",
+            "totalPrice",
+            "color",
+            "standardOptions",
+        ]
+        for i, v in enumerate(data.get("vehicles", [])):
+            miss_v = [f for f in vehicle_fields if not v.get(f) and v.get(f) != 0]
+            if miss_v:
+                return jsonify({"error": f"Vehicle {i} missing fields", "fields": miss_v}), 400
+
+        if data.get("upfitter"):
+            upfitter_fields = ["company", "quoteNumber", "description", "total"]
+            miss_u = [f for f in upfitter_fields if not data["upfitter"].get(f)]
+            if miss_u:
+                return jsonify({"error": "Upfitter data incomplete", "fields": miss_u}), 400
+
         # Set dates if missing
         if not data.get("quoteDate"):
             data["quoteDate"] = datetime.now().strftime("%Y-%m-%d")
@@ -69,12 +111,15 @@ def generate_quote():
         if not data.get("quoteNumber"):
             counter_path = "quote_counter.txt"
             current = 1000
-            if os.path.exists(counter_path):
-                with open(counter_path, "r") as f:
-                    current = int(f.read().strip())
-            data["quoteNumber"] = f"SAG-{current}-AI"
-            with open(counter_path, "w") as f:
-                f.write(str(current + 1))
+            try:
+                if os.path.exists(counter_path):
+                    with open(counter_path, "r") as f:
+                        current = int(f.read().strip())
+                data["quoteNumber"] = f"SAG-{current}-AI"
+                with open(counter_path, "w") as f:
+                    f.write(str(current + 1))
+            except Exception as e:
+                return jsonify({"error": "Failed to increment quote number", "details": str(e)}), 500
 
         # Grand total
         grand_total = sum(v.get("totalPrice", 0) for v in data.get("vehicles", []))
@@ -95,7 +140,8 @@ def generate_quote():
         html_content = template.render(data)
 
         # Submit to DocRaptor
-        filename = f"{data['customer'].replace(' ', '_')}_{data['quoteNumber']}.pdf"
+        safe_customer = data['customer'].splitlines()[0].replace(' ', '_')
+        filename = f"{data['quoteNumber']}_{safe_customer}.pdf"
         create_resp = requests.post(
             "https://docraptor.com/async_docs",
             auth=(docraptor_api_key, ""),
