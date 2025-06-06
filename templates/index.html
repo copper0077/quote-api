@@ -32,9 +32,17 @@
   ]
 }</textarea>
     <button id="generateBtn">Generate Quote</button>
+    <p id="statusHelp" class="help-text">
+      After submitting, a JSON response with <code>statusId</code> will appear below.
+      Poll <code>/api/quote-status/&lt;statusId&gt;</code> to monitor progress. When
+      <code>done</code> becomes <code>true</code>, the response will include a
+      <code>download_url</code> for the finished PDF. A download link will
+      automatically appear below once the file is ready.
+    </p>
     <pre id="response"></pre>
+    <p id="downloadContainer"></p>
   </div>
-<script>
+  <script>
   document.getElementById('generateBtn').addEventListener('click', function() {
     let data;
     try {
@@ -47,14 +55,42 @@
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
-    }).then(r => r.json())
-      .then(json => {
-        document.getElementById('response').textContent = JSON.stringify(json, null, 2);
-      })
-      .catch(err => {
-        document.getElementById('response').textContent = 'Error: ' + err;
-      });
-  });
+      }).then(r => r.json())
+        .then(json => {
+          document.getElementById('response').textContent = JSON.stringify(json, null, 2);
+          if (json.statusId) {
+            pollStatus(json.statusId);
+          }
+        })
+        .catch(err => {
+          document.getElementById('response').textContent = 'Error: ' + err;
+        });
+    });
+
+    function pollStatus(id) {
+      const downloadEl = document.getElementById('downloadContainer');
+      downloadEl.textContent = 'Checking quote status...';
+      const interval = setInterval(() => {
+        fetch(`/api/quote-status/${id}`)
+          .then(r => r.json())
+          .then(stat => {
+            if (stat.done) {
+              clearInterval(interval);
+              if (stat.download_url) {
+                downloadEl.innerHTML = `<a href="${stat.download_url}" target="_blank">Download PDF</a>`;
+              } else {
+                downloadEl.textContent = 'Quote generation completed but no download URL was provided.';
+              }
+            } else {
+              downloadEl.textContent = `Status: ${stat.status || 'processing'}`;
+            }
+          })
+          .catch(err => {
+            clearInterval(interval);
+            downloadEl.textContent = 'Error checking status: ' + err;
+          });
+      }, 3000);
+    }
 </script>
 </body>
 </html>
