@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import datetime, timedelta
 import json
 import pprint
+import re
 
 
 def log_quote_to_google_sheets(data):
@@ -95,7 +96,8 @@ def generate_quote():
         html_content = template.render(data)
 
         # Submit to DocRaptor
-        filename = f"{data['customer'].replace(' ', '_')}_{data['quoteNumber']}.pdf"
+        safe_customer = re.sub(r'[^A-Za-z0-9_-]+', '_', data['customer']).strip('_')
+        filename = f"{safe_customer}_{data['quoteNumber']}.pdf"
         create_resp = requests.post(
             "https://docraptor.com/async_docs",
             auth=(docraptor_api_key, ""),
