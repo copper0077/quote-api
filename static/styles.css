@@ -38,3 +38,9 @@ textarea {
 button {
   margin-top: 10px;
 }
+
+/* Subtle helper text used on the form */
+.help-text {
+  color: #555;
+  margin: 10px 0;
+}
