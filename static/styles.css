@@ -44,3 +44,13 @@ button {
   color: #555;
   margin: 10px 0;
 }
+
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  #logo {
+    max-width: 150px;
+  }
+}
