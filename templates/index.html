@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>Fleet Quote UI</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <style>
-      textarea { width: 100%; height: 300px; }
-    </style>
 </head>
 <body>
+  <div class="container">
+    <img id="logo" src="/static/logo.png" alt="Company logo">
     <h1>Fleet Quote Generator</h1>
-    <p>Enter quote data as JSON:</p>
+    <p class="help-text">Enter quote data in JSON format using the sample below as a starting point.</p>
     <textarea id="jsonInput">{
   "customer": "ACME Corp\n123 Street\nCity, ST",
   "dealership": "Sames Fleet",
@@ -32,9 +31,9 @@
     }
   ]
 }</textarea>
-    <br>
     <button id="generateBtn">Generate Quote</button>
     <pre id="response"></pre>
+  </div>
 <script>
   document.getElementById('generateBtn').addEventListener('click', function() {
     let data;
