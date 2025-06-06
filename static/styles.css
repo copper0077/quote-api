@@ -38,3 +38,12 @@ textarea {
 button {
   margin-top: 10px;
 }
+@media (max-width: 600px) {
+  .container {
+    max-width: 95%;
+  }
+
+  #logo {
+    max-width: 80%;
+  }
+}
