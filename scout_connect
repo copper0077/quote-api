@@ -24,9 +24,8 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successful retrieval
-
     put:
       operationId: updateSheetValues
       summary: Update data in a specific range of a Google Sheet
@@ -41,6 +40,13 @@ paths:
           required: true
           schema:
             type: string
+        - name: valueInputOption
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [RAW, USER_ENTERED]
+          description: Determines how input data should be interpreted
       requestBody:
         required: true
         content:
@@ -55,7 +61,7 @@ paths:
                     items:
                       type: string
       responses:
-        '200':
+        "200":
           description: Update completed
 
 components:
