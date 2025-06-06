@@ -77,7 +77,13 @@
             if (stat.done) {
               clearInterval(interval);
               if (stat.download_url) {
-                downloadEl.innerHTML = `<a href="${stat.download_url}" target="_blank">Download PDF</a>`;
+                // Safely create the anchor element to avoid XSS
+                downloadEl.textContent = '';
+                const a = document.createElement('a');
+                a.href = stat.download_url;
+                a.target = '_blank';
+                a.textContent = 'Download PDF';
+                downloadEl.appendChild(a);
               } else {
                 downloadEl.textContent = 'Quote generation completed but no download URL was provided.';
               }
